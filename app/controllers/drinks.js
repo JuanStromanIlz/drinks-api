@@ -1,4 +1,5 @@
 const Drink = require('../models/drink');
+const { getIngredientPrice } = require('./ingredients');
 
 /* create a new drink */
 async function newDrink(req, res) {
@@ -39,25 +40,83 @@ async function editDrink(req, res) {
   }
 }
 
-/* get a drink */
+/* get prices of each drink */
+async function drinksPrices(drinks) {
+  let drinksWithPrice = drinks.map(async drink => {
+    let ingredientsInDrink = await drink.ingredients.map(async (ingredient, index) => {
+      let price = await getIngredientPrice(ingredient);
+      return {
+        name: ingredient,
+        price: price
+      }
+    });
+    ingredientsInDrink = await Promise.all(ingredientsInDrink);
+    /* get final price */
+    let finalPrice = ingredientsInDrink.map(item => item.price > 0 && item.price).reduce((a, b)=> a + b);
+    let listIngredients = ingredientsInDrink.reduce((obj, item) => Object.assign(obj, { [item.name]: item.price }), {});
+    return {
+      name: drink.name,
+      description: drink.description,
+      ingredients: drink.ingredients,
+      price: {
+        final: finalPrice,
+        ingredients: listIngredients
+      }
+    }
+  });
+  drinksWithPrice = await Promise.all(drinksWithPrice);
+  return drinksWithPrice;
+}
+
+/* get a drink by name */
 async function readDrink(req, res) {
   const {d} = req.query;
   try {
     let drink = await Drink.find({name: d});
     if (drink.length > 0) {
-      drink = drink[0]
-      let sendDrink = {
-        name: drink.name,
-        description: drink.description,
-        ingredients: drink.ingredients,
-        image: drink.image
-      }
-      res.json(sendDrink);
+      drink = await drinksPrices(drink);
+      res.json(drink);
     } else {
       res.json({message: 'No existe un trago bajo ese nombre'});
     }
   } catch(err) {
     res.json({error: err});
+  }
+}
+
+/* get all drinks */
+async function allDrinks(req, res) {
+  try {
+    let drinks = await Drink.find({});
+    if (drinks.length > 0) {
+      drinks = await drinksPrices(drinks);
+      res.json(drinks);
+    } else {
+      res.json({message: 'No existe un trago bajo ese nombre'});
+    }
+  } catch(err) {
+    res.json({error: err});
+  }
+}
+
+/* get drinks by query */
+async function queryDrinks(req, res) {
+  const {i} = req.query;
+  /* if there're two or more ingredients in query */
+  if (Array.isArray(i)) {
+    let searchQuery = i.map(item => ({ingredients: item}));
+    let drinks = await Drink.find({$and: [...searchQuery]});
+    drinks = await drinksPrices(drinks);
+    res.json(drinks);
+  } else {
+    /* if there'is only one ingredient in query */
+    let drinks = await Drink.find({ingredients: i});
+    if (!drinks.length > 0) {
+      res.json({message: 'No existen tragos con estos ingredientes'});
+    } else {
+      drinks = await drinksPrices(drinks);
+      res.json(drinks);
+    }
   }
 }
 
@@ -70,7 +129,7 @@ async function deleteDrink(req, res) {
       await Promise.all(promisesDelete);
       res.json({message: 'Tragos eliminados'});
     } else {
-      await Drink.deleteOne({name: i})
+      await Drink.deleteOne({name: d})
       .then(()=>{
         res.json({message: 'Trago eliminado'});
       });
@@ -80,4 +139,10 @@ async function deleteDrink(req, res) {
   }
 }
 
-module.exports = {newDrink, editDrink, readDrink, deleteDrink};
+module.exports = {newDrink,
+  editDrink,
+  readDrink,
+  allDrinks,
+  queryDrinks,
+  deleteDrink
+};

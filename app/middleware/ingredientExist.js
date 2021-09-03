@@ -23,7 +23,7 @@ async function ingredientExist(req, res, next) {
       /* if one or more ingredients not match the DB function return a array with the items */
       if (notFoud) {
         res.json({
-          message: 'Ocurrio un error al crear el trago, los siguientes ingredientes no existen:',
+          message: 'Los siguientes ingredientes no existen:',
           ingredients: [...itemsNotFound]
         });
       } else {
@@ -47,7 +47,7 @@ async function ingredientExist(req, res, next) {
         /* if one or more ingredients not match the DB function return a array with the items */
         if (notFoud) {
           res.json({
-            message: 'Ocurrio un error al crear el trago, los siguientes ingredientes no existen:',
+            message: 'Los siguientes ingredientes no existen:',
             ingredients: [...itemsNotFound]
           });
         } else {
@@ -59,7 +59,7 @@ async function ingredientExist(req, res, next) {
           notFoud = true;
           itemsNotFound.push(i);
           res.json({
-            message: 'Ocurrio un error al crear el trago, los siguientes ingredientes no existen:',
+            message: 'Los siguientes ingredientes no existen:',
             ingredients: [...itemsNotFound]
           });
         } else {

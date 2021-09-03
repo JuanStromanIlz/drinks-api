@@ -1,4 +1,5 @@
 const Ingredient = require('../models/ingredient');
+const axios = require('axios');
 
 /* create a new ingredient */
 async function newIngredient(req, res) {
@@ -39,14 +40,46 @@ async function editIngredient(req, res) {
   }
 }
 
-/* read all ingredients */
+/* read single ingredient */
 async function readIngredient(req, res) {
+  const {i} = req.query;
+  try {
+    let ingredient = await Ingredient.findOne({name: i});
+    res.json(ingredient);
+  } catch(err) {
+    res.json({error: err});
+  }
+}
+
+/* read all ingredients */
+async function ingredientsList(req, res) {
   try {
     let ingredients = await Ingredient.find({});
     ingredients = ingredients.map(item => item.name);
     res.json(ingredients);
   } catch(err) {
     res.json({error: err});
+  }
+}
+
+/* get ingredient price on mercardo libre */
+async function getIngredientPrice(ingredient) {
+  let finalPrice = 0;
+  let itemInDb = await Ingredient.findOne({name: ingredient});
+  if (itemInDb.listedPrice === true) {
+    let res = await axios.get(`https://api.mercadolibre.com/sites/MLA/search?q=${itemInDb.listedName}`, {
+      headers: { 
+        Authorization: `Bearer ${process.env.MELI_TOKEN}` 
+      }
+    });
+    if (res.status === 200) {
+      finalPrice = res.data.results[0].price;
+      return finalPrice;
+    } else {
+      return finalPrice;
+    }
+  } else {
+    return;
   }
 }
 
@@ -69,4 +102,10 @@ async function deleteIngredient(req, res) {
   }
 }
 
-module.exports= {newIngredient, editIngredient, readIngredient, deleteIngredient};
+module.exports= {newIngredient, 
+  editIngredient,
+  readIngredient, 
+  ingredientsList, 
+  deleteIngredient,
+  getIngredientPrice
+};
