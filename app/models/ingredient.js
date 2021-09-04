@@ -6,8 +6,7 @@ const ingredientSchema = new mongoose.Schema({
     unique: true
   },
   listedName: String,
-  listedPrice: Boolean,
-  image: String
+  listedPrice: Boolean
 });
 
 const Ingredient = mongoose.model('Ingredient', ingredientSchema);

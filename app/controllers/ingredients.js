@@ -3,13 +3,12 @@ const axios = require('axios');
 
 /* create a new ingredient */
 async function newIngredient(req, res) {
-  const {name, listedName, listedPrice, image} = req.body;
+  const {name, listedName, listedPrice} = req.body;
   try {
     let newIngredient = {
       name: name,
       listedName: listedName,
-      listedPrice: listedPrice,
-      image: image,
+      listedPrice: listedPrice
     };
     let ingredient = await Ingredient.create(newIngredient);
     if (ingredient) {
@@ -23,12 +22,11 @@ async function newIngredient(req, res) {
 /* edit a ingredient */
 async function editIngredient(req, res) {
   const {i} = req.query;
-  const {name, listedName, listedPrice, image} = req.body;
+  const {name, listedName, listedPrice} = req.body;
   const editBody = {
     name: name,
     listedName: listedName,
-    listedPrice: listedPrice,
-    image: image
+    listedPrice: listedPrice
   }
   try {
     let ingredientUpdate = await Ingredient.updateOne({name: i}, {...editBody});

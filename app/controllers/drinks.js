@@ -3,13 +3,12 @@ const { getIngredientPrice } = require('./ingredients');
 
 /* create a new drink */
 async function newDrink(req, res) {
-  const {name, description, ingredients, image} = req.body;
+  const {name, description, ingredients} = req.body;
   try {
     let newDrink = {
       name: name,
       description: description,
-      ingredients: ingredients,
-      image: image,
+      ingredients: ingredients
     };
     let drink = await Drink.create(newDrink);
     if (drink) {
@@ -23,12 +22,11 @@ async function newDrink(req, res) {
 /* edit existing drink */
 async function editDrink(req, res) {
   const {drink} = req.query;
-  const {name, description, ingredients, image} = req.body;
+  const {name, description, ingredients} = req.body;
   const editBody = {
     name: name,
     description: description,
-    ingredients: ingredients,
-    image: image
+    ingredients: ingredients
   }
   try {
     let drinkUpdate = await Drink.updateOne({name: drink}, {...editBody});
@@ -60,7 +58,7 @@ async function drinksPrices(drinks) {
       ingredients: drink.ingredients,
       price: {
         final: finalPrice,
-        ingredients: listIngredients
+        ...listIngredients
       }
     }
   });

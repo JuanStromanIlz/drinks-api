@@ -16,9 +16,14 @@ mongoose.connect(process.env.DB)
   process.exit();
 });
 
-app.get('/', (req, res) => {
-  res.json({message: "app up"});
-});
+/* generate new token for devs */
+if (process.env.DEV === 'true') {
+  const jwt = require('jsonwebtoken');
+  app.get('/token', (req, res) => {
+    let token = jwt.sign('newToken', process.env.JWT_TOKEN);
+    res.json(token);
+  });
+}
 
 /* Routes import */
 
