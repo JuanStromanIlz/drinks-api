@@ -4,7 +4,8 @@
   "description": "API para la creacion de tragos",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "author": "Juan Stroman Ilz",
   "license": "ISC",
