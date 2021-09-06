@@ -9,7 +9,7 @@ Recordar que si tomaste no debes conducir.
 ### Request
 `GET /drinks/search?i=Hielo&i=Soda`
 ### Response
-````
+```
 [
   {
     "name": "Americano",
@@ -33,7 +33,7 @@ Recordar que si tomaste no debes conducir.
 ### Request
 `GET /drinks/list`
 ### Response
-````
+```
 [
   {
     "name": "Fernet Cola",
@@ -74,7 +74,7 @@ Recordar que si tomaste no debes conducir.
 ### Request
 `GET /drinks?d=Americano`
 ### Response
-````
+```
 [
   {
     "name": "Americano",
@@ -98,7 +98,7 @@ Recordar que si tomaste no debes conducir.
 ### Request
 `GET /ingredients/list`
 ### Response
-````
+```
 [
   "Coca Cola",
   "Fernet",
@@ -138,14 +138,14 @@ Al clonar el proyecto para hacer uso de los metodos privados se debera tener en 
 ### Request
 `POST /ingredients`
 ### Response
-````
+```
 {message: 'Ingrediente creado con exito'}
 ```
 ## Ver la información completa de un ingrediente
 ### Request
 `GET /ingredients?i=Soda`
 ### Response
-````
+```
 {
     "name": "Soda",
     "listedName": "soda sifon 1 unidad",
@@ -163,7 +163,7 @@ Al clonar el proyecto para hacer uso de los metodos privados se debera tener en 
 ### Request
 `DELETE /ingredients?i=Soda`
 ### Response
-````
+```
 {message: 'ingrediente eliminado'}
 ```
 ## Crear un nuevo trago
@@ -171,7 +171,7 @@ Al clonar el proyecto para hacer uso de los metodos privados se debera tener en 
 > Para crear un nuevo trago todos los ingredientes seleccionados deben estar presentes en la db.
 `POST /drinks`
 ### Response
-````
+```
 {message: 'Trago creado con exito'}
 ```
 ## Editar un trago
@@ -179,12 +179,12 @@ Al clonar el proyecto para hacer uso de los metodos privados se debera tener en 
 ### Request
 `PATCH /drinks?d=Americano`
 ### Response
-````
+```
 {message: 'trago editado con exito'}
 ```
 ## Eliminar un trago
 `delete /drinks?d=Americano`
 ### Response
-````
+```
 {message: 'Trago eliminado'}
 ```
