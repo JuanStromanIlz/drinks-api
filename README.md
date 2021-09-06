@@ -7,6 +7,7 @@ Recordar que si tomaste no debes conducir.\
 [![ir a la API](https://img.shields.io/badge/-Ver%20Online-red?style=for-the-badge&logo=googlechrome&logoColor=white)](https://jstromanilz-drinks-api.herokuapp.com)
 ## Metodos publicos 
 ## Traer los tragos que contengan los ingredientes consultados
+> Para conocer la lista de todos los ingredientes disponibles: `GET /ingredients/list`
 ### Request
 `GET /drinks/search?i=Hielo&i=Soda`
 ### Response
