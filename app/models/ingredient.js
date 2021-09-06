@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const ingredientSchema = new mongoose.Schema({
   name: {
     type: String,
-    unique: true
+    unique: true,
+    required: true
   },
   listedName: String,
   listedPrice: Boolean

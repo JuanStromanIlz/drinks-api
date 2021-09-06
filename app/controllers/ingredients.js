@@ -43,7 +43,12 @@ async function readIngredient(req, res) {
   const {i} = req.query;
   try {
     let ingredient = await Ingredient.findOne({name: i});
-    res.json(ingredient);
+    let sendIngredient = {
+      name: ingredient.name,
+      listedName: ingredient.listedName,
+      listedPrice: ingredient.listedPrice
+    };
+    res.json(sendIngredient);
   } catch(err) {
     res.json({error: err});
   }

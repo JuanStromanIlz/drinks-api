@@ -1,4 +1,5 @@
 const Drink = require('../models/drink');
+const Ingredient = require('../models/ingredient');
 const { getIngredientPrice } = require('./ingredients');
 
 /* create a new drink */
@@ -21,17 +22,33 @@ async function newDrink(req, res) {
 
 /* edit existing drink */
 async function editDrink(req, res) {
-  const {drink} = req.query;
-  const {name, description, ingredients} = req.body;
+  const {d} = req.query;
+  const {name, description, deleteI, ingredients} = req.body;
   const editBody = {
     name: name,
-    description: description,
-    ingredients: ingredients
+    description: description
   }
+  let ingredientsList = Array.isArray(ingredients) ? [...ingredients] : [ingredients];
   try {
-    let drinkUpdate = await Drink.updateOne({name: drink}, {...editBody});
-    if (drinkUpdate) {
-      res.json({message: 'trago editado con exito'});
+    if (deleteI) {
+      let itemsToDelete = Array.isArray(deleteI) ? [...deleteI] : [deleteI];
+      let deleteIngredients = await Drink.updateOne({name: d}, {$pull: { ingredients : { $in: itemsToDelete } }});
+      if (deleteIngredients) {
+        let drinkUpdate = await Drink.updateOne({name: d}, {...editBody, $addToSet: { ingredients: { $each: ingredientsList } }});
+        if (drinkUpdate) {
+          res.json({message: 'trago editado con exito'});
+        }
+      }
+    } else {
+      let drinkUpdate = await Drink.updateOne({name: d}, 
+        {
+          ...editBody,
+          $addToSet: { ingredients: { $each: ingredientsList } }
+        }
+      );
+      if (drinkUpdate) {
+        res.json({message: 'trago editado con exito'});
+      }
     }
   } catch(err) {
     res.json({error: err});

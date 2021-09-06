@@ -7,14 +7,15 @@ const jwtAuth = require('../middleware/jwtAuth');
 
 /* middleware for check ingredients */
 const ingredientExist = require('../middleware/ingredientExist');
+const drinkExist = require('../middleware/drinkExist');
 
 /* public */
 Router.get('/search', ingredientExist, queryDrinks);
-Router.get('/', readDrink);
+Router.get('/', drinkExist, readDrink);
 Router.get('/list', allDrinks);
 /* private */
 Router.post('/', jwtAuth.authenticate('jwt',{session: false}), ingredientExist, newDrink);
-Router.patch('/', jwtAuth.authenticate('jwt',{session: false}), ingredientExist, editDrink);
-Router.delete('/', jwtAuth.authenticate('jwt',{session: false}) , deleteDrink);
+Router.patch('/', jwtAuth.authenticate('jwt',{session: false}), ingredientExist, drinkExist, editDrink);
+Router.delete('/', jwtAuth.authenticate('jwt',{session: false}) , drinkExist, deleteDrink);
 
 module.exports= Router;

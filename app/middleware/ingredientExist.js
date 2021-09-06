@@ -9,25 +9,39 @@ async function ingredientExist(req, res, next) {
     let itemsNotFound = [];
     /* check if ingredients was send via params */
     if (ingredients) {
-      let itemPromises = await ingredients.map(async item => {
-        let promise = await Ingredient.exists({ name: item });
-        return promise;
-      });
-      let promises = await Promise.all(itemPromises);
-      promises.filter((item, index) => {
-        if (item === false) {
-          notFoud = true;
-          itemsNotFound.push(ingredients[index]);
-        }
-      });
-      /* if one or more ingredients not match the DB function return a array with the items */
-      if (notFoud) {
-        res.json({
-          message: 'Los siguientes ingredientes no existen:',
-          ingredients: [...itemsNotFound]
+      if (Array.isArray(ingredients)) {
+        let itemPromises = await ingredients.map(async item => {
+          let promise = await Ingredient.exists({ name: item });
+          return promise;
         });
+        let promises = await Promise.all(itemPromises);
+        promises.filter((item, index) => {
+          if (item === false) {
+            notFoud = true;
+            itemsNotFound.push(ingredients[index]);
+          }
+        });
+        /* if one or more ingredients not match the DB function return a array with the items */
+        if (notFoud) {
+          res.json({
+            message: 'Los siguientes ingredientes no existen:',
+            ingredients: [...itemsNotFound]
+          });
+        } else {
+          next();
+        }
       } else {
-        next();
+        let searchItem = await Ingredient.exists({name: ingredients});
+        if (!searchItem) {
+          notFoud = true;
+          itemsNotFound.push(ingredients);
+          res.json({
+            message: 'Los siguientes ingredientes no existen:',
+            ingredients: [...itemsNotFound]
+          });
+        } else {
+          next();
+        }
       }
     }
     /* check if ingredients was send via params */
