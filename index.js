@@ -25,6 +25,14 @@ if (process.env.DEV === 'true') {
   });
 }
 
+app.get('/', (req, res) => {
+  res.json({
+    author: 'Juan Stroman Ilz',
+    info: 'Para conocer las rutas y metodos para comunicarte con la api lee el README del proyecto en github',
+    github: 'https://github.com/JuanStromanIlz/drinks-api/blob/main/README.md'
+  });
+})
+
 /* Routes import */
 
 /* ingredients */
